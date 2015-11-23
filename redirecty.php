@@ -148,7 +148,7 @@ kirby()->hook('panel.file.upload', function($file) {
 
 	$page = $file->page();
 
-	if($page->template()==c::get('redirecty-template','redirects')) {
+	if($page->intendedTemplate()==c::get('redirecty-template','redirects')) {
 
 		if($file->extension()=='csv' || $file->extension()=='json'):
 			require_once(__DIR__ . DS . 'lib' . DS . 'redirectyFunctions.php');
@@ -170,8 +170,17 @@ function redirecty() {
 	$redirectsURI = c::get('redirecty-list', 'redirects');
 	$redirects = page($redirectsURI)->redirects()->toStructure();
 	$caseSensitive = c::get('redirecty-case', true);
+	$baseRewrite = c::get('redirecty-subfolder', false);
 
-	$uri = r($caseSensitive, url::path(), str::lower(url::path()));
+	// Remove the base subfolder from the path so we can match the path
+	if($baseRewrite):
+		$base = str_replace(url::base().'/','',url::index());
+		$cleanPath = str_replace($base.'/','',url::path());
+	else:
+		$cleanPath = url::path();
+	endif;
+
+	$uri = r($caseSensitive, $cleanPath, str::lower($cleanPath));
 
 	if(c::get('redirecty-home', true) && page($uri) && page($uri)->isHomePage())
 		header::redirect(url());
@@ -186,6 +195,11 @@ function redirecty() {
 			else:
 				// If a redirect is to the homepage (/), make sure we're not doubling up on forward slashes
 				$url = r(str::startsWith($redirect->new(),'/'), $redirect->new(), '/'.$redirect->new());
+			
+				// Add the base subfolder back in
+				if($baseRewrite)
+					$url = url::index().$url;
+
 				header::redirect($url);
 			endif;
 

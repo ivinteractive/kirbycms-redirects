@@ -102,6 +102,12 @@ Type: ```Boolean``` Default: ```true```
 
 Whether the homepage's URL (i.e. '/home') should have a 301 redirect to the base URL.
 
+##### redirecty-subfolder
+
+Type: ```Boolean``` Default: ```false```
+
+Whether to include the base path removal in the redirect matching. Change this to true if your site exists in a subfolder.
+
 #### Import options
 
 Upload a CSV or JSON file to the redirects list page in the Kirby panel -- the file will automatically be parsed and the page will be updated.
