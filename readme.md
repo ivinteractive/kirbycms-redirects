@@ -102,6 +102,12 @@ Type: ```Boolean``` Default: ```true```
 
 Whether the homepage's URL (i.e. '/home') should have a 301 redirect to the base URL.
 
+##### redirecty-self
+
+Type: ```String``` Default: ```Homepage```
+
+Where the redirects list should redirect to. Set to whatever URI the redirects list page should redirect to, or set to false to not have it redirect at all. Added so you don't have to remember to redirect the list itself.
+
 ##### redirecty-subfolder
 
 Type: ```Boolean``` Default: ```false```

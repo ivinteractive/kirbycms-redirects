@@ -185,6 +185,11 @@ function redirecty() {
 	if(c::get('redirecty-home', true) && page($uri) && page($uri)->isHomePage())
 		header::redirect(url());
 
+	$self = c::get('redirecty-self', url());
+
+	if($self && $uri==$redirectsURI)
+		header::redirect($self);
+
 	foreach($redirects as $redirect):
 
 		$match = r($caseSensitive, $uri==$redirect->old(), $uri==str::lower($redirect->old()));
