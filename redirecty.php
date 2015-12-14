@@ -180,6 +180,10 @@ function redirecty() {
 		$cleanPath = url::path();
 	endif;
 
+	$site = site();
+	$language = $site->detectedLanguage();
+	$langPath = r($language!=$site->defaultLanguage, $language->url, '');
+
 	$uri = r($caseSensitive, $cleanPath, str::lower($cleanPath));
 
 	if(c::get('redirecty-home', true) && page($uri) && page($uri)->isHomePage())
@@ -194,7 +198,7 @@ function redirecty() {
 				header::redirect($redirect->new());
 			else:
 				// If a redirect is to the homepage (/), make sure we're not doubling up on forward slashes
-				$url = r(str::startsWith($redirect->new(),'/'), $redirect->new(), '/'.$redirect->new());
+				$url = $langPath.r(str::startsWith($redirect->new(),'/'), $redirect->new(), '/'.$redirect->new());
 			
 				// Add the base subfolder back in
 				if($baseRewrite)
