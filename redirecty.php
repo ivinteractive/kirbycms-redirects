@@ -182,7 +182,7 @@ function redirecty() {
 
 	$site = site();
 	$language = $site->detectedLanguage();
-	$langPath = r($language!=$site->defaultLanguage, $language->url, '');
+	$langPath = r($language!=$site->defaultLanguage && c::get('language.detect'), $language->url, '');
 
 	$uri = r($caseSensitive, $cleanPath, str::lower($cleanPath));
 
