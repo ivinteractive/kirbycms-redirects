@@ -198,7 +198,7 @@ function redirecty() {
 			if($redirect->external()->isTrue()):
 				header::redirect($redirect->new());
 			else:
-				if($langSwitch):
+				if($langSwitch && page($redirect->new())):
 					// Get the correct URI for the page, if the URL Key has been set
 					$langURI = page($redirect->new())->uri($language->code);
 					$url = $langPath.r(str::startsWith($redirect->new(),'/'), $langURI, '/'.$langURI);
