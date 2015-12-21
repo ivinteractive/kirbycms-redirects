@@ -182,7 +182,8 @@ function redirecty() {
 
 	$site = site();
 	$language = $site->detectedLanguage();
-	$langPath = r($language!=$site->defaultLanguage && c::get('language.detect'), $language->url, '');
+	$langSwitch = r($language!=$site->defaultLanguage && c::get('language.detect'), true, false);
+	$langPath = r($langSwitch, $language->url, '');
 
 	$uri = r($caseSensitive, $cleanPath, str::lower($cleanPath));
 
@@ -197,8 +198,14 @@ function redirecty() {
 			if($redirect->external()->isTrue()):
 				header::redirect($redirect->new());
 			else:
-				// If a redirect is to the homepage (/), make sure we're not doubling up on forward slashes
-				$url = $langPath.r(str::startsWith($redirect->new(),'/'), $redirect->new(), '/'.$redirect->new());
+				if($langSwitch):
+					// Get the correct URI for the page, if the URL Key has been set
+					$langURI = page($redirect->new())->uri($language->code);
+					$url = $langPath.r(str::startsWith($redirect->new(),'/'), $langURI, '/'.$langURI);
+				else:
+					// If a redirect is to the homepage (/), make sure we're not doubling up on forward slashes
+					$url = r(str::startsWith($redirect->new(),'/'), $redirect->new(), '/'.$redirect->new());
+				endif;
 			
 				// Add the base subfolder back in
 				if($baseRewrite)
