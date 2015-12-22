@@ -171,6 +171,7 @@ function redirecty() {
 	$redirects = page($redirectsURI)->redirects()->toStructure();
 	$caseSensitive = c::get('redirecty-case', true);
 	$baseRewrite = c::get('redirecty-subfolder', false);
+	$redirectType = 301;
 
 	// Remove the base subfolder from the path so we can match the path
 	if($baseRewrite):
@@ -202,6 +203,7 @@ function redirecty() {
 					// Get the correct URI for the page, if the URL Key has been set
 					$langURI = page($redirect->new())->uri($language->code);
 					$url = $langPath.r(str::startsWith($redirect->new(),'/'), $langURI, '/'.$langURI);
+					$redirectType = c::get('redirecty-multi', 302);
 				else:
 					// If a redirect is to the homepage (/), make sure we're not doubling up on forward slashes
 					$url = r(str::startsWith($redirect->new(),'/'), $redirect->new(), '/'.$redirect->new());
@@ -211,7 +213,7 @@ function redirecty() {
 				if($baseRewrite)
 					$url = url::index().$url;
 
-				header::redirect($url);
+				header::redirect($url, $redirectType);
 			endif;
 
 			exit;

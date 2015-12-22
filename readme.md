@@ -108,6 +108,12 @@ Type: ```Boolean``` Default: ```false```
 
 Whether to include the base path removal in the redirect matching. Change this to true if your site exists in a subfolder.
 
+##### redirecty-multi
+
+Type: ```Integer``` Default: ```302```
+
+The type of redirect used for versions of pages that are not the default language on a multilanguage setup. The default language will still get a 301 redirect.
+
 #### Import options
 
 Upload a CSV or JSON file to the redirects list page in the Kirby panel -- the file will automatically be parsed and the page will be updated.
