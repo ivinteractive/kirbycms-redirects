@@ -44,6 +44,8 @@ Create a redirects template and page with all your redirects. It can be a simple
 
 Create a redirects page using the template and add your redirects (oldbad_uri.html => wonderful-new-kirby-uri). Call the ```redirecty()``` function at the top of your header snippet, and you're all set! Test your redirects out to make sure everything's set -- the redirects should show up with a 301 in the Developer tools Network tab.
 
+![Redirects panel screenshot](https://raw.githubusercontent.com/ivinteractive/kirbycms-redirects/dev/sample.png)
+
 ## Link updating
 
 301 redirects are nice, but wouldn't it be great to get the actual links within your content updated, too? For this, you'll need to set up a couple of config variables, and then go to [http://yourdomain.com/redirecty](yourdomain.com/redirecty).
