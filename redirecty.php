@@ -7,8 +7,10 @@ else:
 	$auth = false;
 endif;
 
-$kirby->set('blueprint', 'redirects', __DIR__ . DS . 'assets' . DS . 'blueprints' . DS . 'redirects.yaml');
-$kirby->set('widget', 'redirecty', __DIR__ . DS . 'widgets' . DS . 'redirecty');
+if(!c::get('redirecty-template'))
+	$kirby->set('blueprint', 'redirects', __DIR__ . DS . 'assets' . DS . 'blueprints' . DS . 'redirects.yaml');
+if(c::get('redirecty-widget', true))
+	$kirby->set('widget', 'redirecty', __DIR__ . DS . 'widgets' . DS . 'redirecty');
 
 if(c::get('redirecty') && ($auth || c::get('redirecty-noauth',false))):
 

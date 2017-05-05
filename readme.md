@@ -9,6 +9,8 @@ When updating a non-CMS site to Kirby, we usually spend a lot of time updating o
 - Content updates to search for and replace old links
 - CSV/JSON import/export of the redirects list
 
+The plugin requires Kirby 2.3.0+.
+
 ## Installation
 
 Download the zip and extract the files to /site/plugins/redirecty, or if you're using it as a submodule run this from your site root:
@@ -19,30 +21,7 @@ git submodule add https://github.com/ivinteractive/kirbycms-redirects ./site/plu
 
 ## Adding your redirects
 
-Create a redirects template and page with all your redirects. It can be a simple template with a structure field for redirects. The only required fields are old, new, and external.
-
-```
-  redirects:
-    label: Redirects
-    type: structure
-    style: table
-    fields:
-      old:
-        label: Old URL
-        type: text
-        icon: times
-      new:
-        label: New URL
-        type: text
-        icon: check
-      external:
-        label: External
-        text: Is it an external link?
-        type: checkbox
-        icon: share
-```
-
-Create a redirects page using the template and add your redirects (oldbad_uri.html => wonderful-new-kirby-uri). Call the ```redirecty()``` function at the top of your header snippet, and you're all set! Test your redirects out to make sure everything's set -- the redirects should show up with a 301 in the Developer tools Network tab.
+The plugin includes and registers a redirects blueprint if no alternate blueprint is provided (see ```redirecty-template``` below). Create a redirects page using this template and add your redirects (oldbad_uri.html => wonderful-new-kirby-uri). Call the ```redirecty()``` function at the top of your header snippet, and you're all set! Test your redirects out to make sure everything's set -- the redirects should show up with a 301 in the Developer tools Network tab.
 
 ![Redirects panel screenshot](https://raw.githubusercontent.com/ivinteractive/kirbycms-redirects/dev/sample.png)
 
@@ -154,4 +133,16 @@ The URI where you can get JSON exports of the redirects list.
 
 Type: ```String``` Default: ```redirects```
 
-The name of the template you're using for the redirects list. This is only used as a check to make sure that the CSV/JSON import hook only runs on your redirects page (parsing the file, updating the page, and deleting the uploaded file).
+The name of the template you're using for the redirects list. This is used as a check to make sure that the CSV/JSON import hook only runs on your redirects page (parsing the file, updating the page, and deleting the uploaded file), as well as a check on whether the blueprint included with the plugin should be registered. If no alternate blueprint is set in the config file, the default redirects template will be registerd.
+
+##### redirecty-widget
+
+Type: ```Boolean``` Default: ```true```
+
+Whether or not to show the dashboard widget.
+
+##### redirecty-widget-count
+
+Type: ```Integer``` Default: ```5```
+
+The maximum amount of redirects to show in the dashboard widget. If set to 0, it hides the redirects preview and CSV/JSON download links in the widget.
