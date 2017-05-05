@@ -17,10 +17,10 @@ function updatePage($pages, $redirect, $num, $changeList, $multilang, $dryrun, $
 			foreach($multilang as $lang):
 
 				// Don't do the default language yet - if you do the non-default language last, the title will get updated to that language's title
-				if($lang['default'])
+				if(isset($lang['default']) && $lang['default'])
 					continue;
 
-				$return = returnResponse($return, multiLangPage($page, $redirect, $field, $value, $return['num'], $return['changeList'], $lang, $dryrun, $case));
+				$return = returnResponse($return, multiLangPage($page, $redirect, $return['num'], $return['changeList'], $lang, $dryrun, $case));
 
 	        endforeach;
 
@@ -28,7 +28,7 @@ function updatePage($pages, $redirect, $num, $changeList, $multilang, $dryrun, $
 
 	        	// Do the default language now
 	        	if($lang['default']):
-					$return = returnResponse($return, multiLangPage($page, $redirect, $field, $value, $return['num'], $return['changeList'], $lang, $dryrun, $case));
+					$return = returnResponse($return, multiLangPage($page, $redirect, $return['num'], $return['changeList'], $lang, $dryrun, $case));
 	        		break;
 
 	        	else:
@@ -40,7 +40,7 @@ function updatePage($pages, $redirect, $num, $changeList, $multilang, $dryrun, $
 
 		else:
 
-			$return = returnResponse($return, singleLangPage($page, $redirect, $field, $value, $return['num'], $return['changeList'], $dryrun, $case));
+			$return = returnResponse($return, singleLangPage($page, $redirect, $return['num'], $return['changeList'], $dryrun, $case));
 
 		endif;
 
@@ -69,7 +69,7 @@ function returnResponse($return, $result) {
 }
 
 // Make sure that when we update the page, we're doing it with the correct language (files ending in .en.txt, .de.txt, etc)
-function multiLangPage($page, $redirect, $field, $value, $num, $changeList, $lang, $dryrun, $case) {
+function multiLangPage($page, $redirect, $num, $changeList, $lang, $dryrun, $case) {
 
 	$response = '';
 
@@ -103,7 +103,7 @@ function multiLangPage($page, $redirect, $field, $value, $num, $changeList, $lan
 }
 
 // When there's no multilanguage setup (files ending in just .txt)
-function singleLangPage($page, $redirect, $field, $value, $num, $changeList, $dryrun, $case) {
+function singleLangPage($page, $redirect, $num, $changeList, $dryrun, $case) {
 
 	$response = '';
 
@@ -170,6 +170,9 @@ function redirectReplace($page, $old, $new, $field, $value, $num, $lang=false, $
 		$pageChange = true;
 
 	endif;
+
+	if(!isset($strCount))
+		$strCount = 0;
 
 	return array(
 		'response' => $response,
