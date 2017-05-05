@@ -7,6 +7,9 @@ else:
 	$auth = false;
 endif;
 
+$kirby->set('blueprint', 'redirects', __DIR__ . DS . 'assets' . DS . 'blueprints' . DS . 'redirects.yaml');
+$kirby->set('widget', 'redirecty', __DIR__ . DS . 'widgets' . DS . 'redirecty');
+
 if(c::get('redirecty') && ($auth || c::get('redirecty-noauth',false))):
 
 	require_once(__DIR__ . DS . 'lib' . DS . 'redirectyFunctions.php');
@@ -26,7 +29,7 @@ if(c::get('redirecty') && ($auth || c::get('redirecty-noauth',false))):
 				$response.= '<head>';
 				$response.= css('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700');
 				$response.= css('https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css');
-				$response.= '<style>'.file_get_contents(__DIR__ . DS . 'assets' . DS . 'redirecty.css').'</style>';
+				$response.= '<style>'.file_get_contents(__DIR__ . DS . 'assets' . DS . 'css' . DS . 'redirecty.css').'</style>';
 				$response.= '</head>';
 				$response.= '<body>';
 
