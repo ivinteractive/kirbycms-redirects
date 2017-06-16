@@ -31,7 +31,7 @@ return array(
     $content = brick('style', file_get_contents(__DIR__ . DS . '..' . DS . '..' . DS . 'assets' . DS . 'css' . DS . 'widget.css'));
 
     if($redirects->count()):
-      $content.= brick('p', 'Recently added redirects'.r($count, ' <em>('.$count.' more...)</em>', ''));
+      $content.= brick('p', 'Recently added redirects'.r($count > 0, ' <em>('.$count.' more...)</em>', ''));
       $content.= '<table class="structure-table"><thead><tr><th>Old</th><th>New</th></tr></thead>';
       $content.= '<tbody>';
 
