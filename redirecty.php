@@ -87,7 +87,7 @@ if(c::get('redirecty') && ($auth || c::get('redirecty-noauth',false))):
 							$subhead .= $protip;
 						$response = '<h1>Redirecty would have made ' . $num . ' replacement'.r($num!==1,'s').' in ' . $pageNum . ' page'.r($pageNum!==1,'s').'.</h1>'.$subhead.'<ul>' . $response . '</ul>';
 					else:
-						$response = '<h1>Redirecty made ' . $num . ' replacement'.r($num!==1,'s').' in ' . $pageNum . ' page'.r($pageNum!==1,'s').'.</h1>'.r(isset($protip), $subhead.$protip).'<ul>' . $response . '</ul>';
+						$response = '<h1>Redirecty made ' . $num . ' replacement'.r($num!==1,'s').' in ' . $pageNum . ' page'.r($pageNum!==1,'s').'.</h1>'.((isset($protip)) ? $subhead.$protip : '').'<ul>' . $response . '</ul>';
 					endif;
 
 					$response.= '<p>Ran in  '. number_format((microtime(true) - $init), 6) . 's.</p>';
