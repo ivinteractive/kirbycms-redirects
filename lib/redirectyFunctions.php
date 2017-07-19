@@ -198,7 +198,7 @@ function importRedirects($file) {
 		    $redirects[] = array(
 		    	'old' => $item[0],
 		    	'new' => $item[1],
-		    	'external' => r($item[2]==1, true, false)
+		    	'external' => r(isset($item[2]) && $item[2]==1, true, false)
 		    );
 		endforeach;
 
@@ -216,7 +216,7 @@ function importRedirects($file) {
 				$redirects[] = array(
 			    	'old' => $item[0],
 			    	'new' => $item[1],
-			    	'external' => r($item[2]==true, true, false)
+			    	'external' => r(isset($item[2]) && $item[2]==true, true, false)
 			    );
 			endif;
 		endforeach;
