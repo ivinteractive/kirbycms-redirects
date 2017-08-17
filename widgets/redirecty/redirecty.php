@@ -23,7 +23,11 @@ return array(
 
     $limit = c::get('redirecty-widget-count', 5);
 
-    $redirects = page(c::get('redirects-list-uri', 'redirects'))->redirects()->toStructure()->flip();
+    if($pg = page(c::get('redirects-list-uri', 'redirects'))):
+      $redirects = $pg->redirects()->toStructure()->flip();
+    else:
+      $redirects = new Collection([]);
+    endif;
 
     $count = $redirects->count() - $limit;
     $redirects = $redirects->limit($limit);
