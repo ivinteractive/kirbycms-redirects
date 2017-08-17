@@ -4,7 +4,7 @@ $options = [
   [
     'text' => 'View all',
     'icon' => 'pencil',
-    'link' => '/panel/pages/'.c::get('redirects-list-uri', 'redirects').'/edit'
+    'link' => panel::instance()->urls()->index().'/pages/'.c::get('redirects-list-uri', 'redirects').'/edit'
   ]
 ];
 
