@@ -173,7 +173,13 @@ kirby()->hook('panel.file.upload', function($file) {
 function redirecty() {
 
 	$redirectsURI = c::get('redirecty-list', 'redirects');
-	$redirects = page($redirectsURI)->redirects()->toStructure();
+
+    if($pg = page($redirectsURI)):
+      $redirects = $pg->redirects()->toStructure();
+    else:
+      $redirects = new Collection([]);
+    endif;
+
 	$caseSensitive = c::get('redirecty-case', true);
 	$baseRewrite = c::get('redirecty-subfolder', false);
 	$redirectType = 301;
