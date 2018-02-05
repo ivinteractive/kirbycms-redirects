@@ -35,3 +35,8 @@ fields:
         text: Is it an external link?
         type: checkbox
         icon: share
+      code:
+        label: Redirect code
+        type: text
+        default: 301
+        icon: code

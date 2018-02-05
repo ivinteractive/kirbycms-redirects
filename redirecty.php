@@ -229,7 +229,7 @@ function redirecty() {
 				if($baseRewrite)
 					$url = url::index().$url;
 
-				header::redirect($url, $redirectType);
+				header::redirect($url, (($redirect->code()->isNotEmpty()) ? $redirect->code()->value() : $redirectType));
 			endif;
 
 			exit;
