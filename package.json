@@ -4,6 +4,7 @@
   "main": "index.js",
   "repository": "https://github.com/ivinteractive/kirbycms-redirects.git",
   "author": "iv-craig <cs@ivinteractive.com>",
+  "type": "kirby-plugin",
   "license": "MIT",
   "dependencies": {
     "gulp": "^3.9.1",
