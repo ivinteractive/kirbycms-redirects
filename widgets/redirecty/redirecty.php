@@ -1,12 +1,23 @@
 <?php 
 
-$options = [
-  [
-    'text' => 'View all',
-    'icon' => 'pencil',
-    'link' => panel::instance()->urls()->index().'/pages/'.c::get('redirects-list-uri', 'redirects').'/edit'
-  ]
-];
+if(page(c::get('redirects-list-uri', 'redirects'))):
+  $options = [
+    [
+      'text' => 'View all',
+      'icon' => 'pencil',
+      'link' => panel::instance()->urls()->index().'/pages/'.c::get('redirects-list-uri', 'redirects').'/edit',
+    ]
+  ];
+else:
+  $options = [
+    [
+      'text' => 'Create redirects page',
+      'icon' => 'plus',
+      'link' => '/panel/site/add?title=Redirects&uid='.c::get('redirects-list-uri', 'redirects').'&template='.c::get('redirecty-template','redirects'),
+      'modal' => true,
+    ]
+  ];
+endif;
 
 if(c::get('redirecty'))
   $options[] = [
