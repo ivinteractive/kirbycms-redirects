@@ -1,5 +1,9 @@
 <?php
 
+require_once(__DIR__ . DS . 'lib' . DS . 'redirecty.class.php');
+
+use Ivinteractive\Redirecty;
+
 // Link updating functionality through a custom route
 if($user = site()->user()):
 	$auth = r($user->hasPanelAccess(), true, false);
@@ -14,15 +18,13 @@ if(c::get('redirecty-widget', true))
 
 if(c::get('redirecty') && ($auth || c::get('redirecty-noauth',false))):
 
-	require_once(__DIR__ . DS . 'lib' . DS . 'redirectyFunctions.php');
-
 	$redirectsURI = c::get('redirects-list-uri', 'redirects');
 	$dryrun = c::get('redirecty-dryrun', true);
 	$multilang = c::get('languages', false);
 	$case = c::get('redirecty-case', true);
 	
-	kirby()->routes(array(
-		array(
+	kirby()->routes([
+		[
 			'pattern' => c::get('redirecty-uri', 'redirecty'),
 			'action'	=> function() use($redirectsURI, $dryrun, $multilang, $case) {
 
@@ -61,7 +63,7 @@ if(c::get('redirecty') && ($auth || c::get('redirecty-noauth',false))):
 
 						$pages = site()->search($redirect->old())->not($redirectsURI);
 
-						if(!$result = updatePage($pages, $redirect, $num, $changeList, $multilang, $dryrun, $case))
+						if(!$result = Redirecty::updatePage($pages, $redirect, $num, $changeList, $multilang, $dryrun, $case))
 							throw new Exception('Wasn\'t able to make updates for the old URI "'.$redirect.'". Please check your config variables to make sure they\'re set correctly.');
 						
 						$response.= $result['response'];
@@ -98,14 +100,14 @@ if(c::get('redirecty') && ($auth || c::get('redirecty-noauth',false))):
 					$response.= '<p>'.$e->getMessage().'</p>';
 				}
 
-				$CSV = kirbytag(array(
+				$CSV = kirbytag([
 					'link' => c::get('redirecty-csv','redirecty-csv'),
 					'text' => 'CSV'
-				));
-				$JSON = kirbytag(array(
+				]);
+				$JSON = kirbytag([
 					'link' => c::get('redirecty-json','redirecty-json'),
 					'text' => 'JSON'
-				));
+				]);
 				$response.= '<download>Export the redirects list: '.$CSV.' / '.$JSON.'</download>';
 
 				$response.= '</body>';
@@ -114,36 +116,36 @@ if(c::get('redirecty') && ($auth || c::get('redirecty-noauth',false))):
 				return new Response($response);
 
 			}
-		)
-	));
+		]
+	]);
 
 
 	// Routing for CSV redirects exports
-	kirby()->routes(array(
-		array(
+	kirby()->routes([
+		[
 			'pattern' => c::get('redirecty-csv','redirecty-csv'),
 			'action'	=> function() {
-				$content = exportRedirects('csv');
+				$content = Redirecty::exportRedirects('csv');
 				header::contentType('text/csv');
-				header::download(array('name'=>'redirects.csv'));
+				header::download(['name'=>'redirects.csv']);
 				return new Response($content,'csv');
 			}
-		)
-	));
+		]
+	]);
 
 
 	// Routing for JSON redirects exports
-	kirby()->routes(array(
-		array(
+	kirby()->routes([
+		[
 			'pattern' => c::get('redirecty-json','redirecty-json'),
 			'action'	=> function() {
-				$content = exportRedirects('json');
+				$content = Redirecty::exportRedirects('json');
 				header::contentType('application/json');
-				header::download(array('name'=>'redirects.json'));
+				header::download(['name'=>'redirects.json']);
 				return new Response($content,'json');
 			}
-		)
-	));
+		]
+	]);
 
 endif;
 
@@ -157,7 +159,7 @@ kirby()->hook('panel.file.upload', function($file) {
 
 		if($file->extension()=='csv' || $file->extension()=='json'):
 			require_once(__DIR__ . DS . 'lib' . DS . 'redirectyFunctions.php');
-			importRedirects($file);
+			Redirecty::importRedirects($file);
 			if(!c::get('redirecty-import-save', false)):
 				$file->delete();
 			endif;
@@ -172,69 +174,6 @@ kirby()->hook('panel.file.upload', function($file) {
 // Redirect URIs set up in the redirects file
 function redirecty() {
 
-	$redirectsURI = c::get('redirecty-list', 'redirects');
-
-    if($pg = page($redirectsURI)):
-      $redirects = $pg->redirects()->toStructure();
-    else:
-      $redirects = new Collection([]);
-    endif;
-
-	$caseSensitive = c::get('redirecty-case', true);
-	$baseRewrite = c::get('redirecty-subfolder', false);
-	$redirectType = 301;
-
-	// Remove the base subfolder from the path so we can match the path
-	if($baseRewrite):
-		$base = str_replace(url::base().'/','',url::index());
-		$cleanPath = str_replace($base.'/','',url::path());
-	else:
-		$cleanPath = url::path();
-	endif;
-
-	$site = site();
-	$language = $site->detectedLanguage();
-	$langSwitch = r($language!=$site->defaultLanguage() && c::get('language.detect'), true, false);
-	$langPath = ($langSwitch) ? $language->url : '';
-
-	$uri = r($caseSensitive, $cleanPath, str::lower($cleanPath));
-
-	if(c::get('redirecty-home', true) && page($uri) && page($uri)->isHomePage())
-		header::redirect(url());
-
-	$self = c::get('redirecty-self', url());
-
-	if($self && $uri==$redirectsURI)
-		header::redirect($self);
-
-	foreach($redirects as $redirect):
-
-		$match = r($caseSensitive, $uri==$redirect->old(), $uri==str::lower($redirect->old()));
-
-		if($match):
-			if($redirect->external()->isTrue()):
-				header::redirect($redirect->new());
-			else:
-				if($langSwitch && page($redirect->new())):
-					// Get the correct URI for the page, if the URL Key has been set
-					$langURI = page($redirect->new())->uri($language->code);
-					$url = $langPath.r(str::startsWith($redirect->new(),'/'), $langURI, '/'.$langURI);
-					$redirectType = c::get('redirecty-multi', 302);
-				else:
-					// If a redirect is to the homepage (/), make sure we're not doubling up on forward slashes
-					$url = r(str::startsWith($redirect->new(),'/'), $redirect->new(), '/'.$redirect->new());
-				endif;
-			
-				// Add the base subfolder back in
-				if($baseRewrite)
-					$url = url::index().$url;
-
-				header::redirect($url, (($redirect->code()->isNotEmpty()) ? $redirect->code()->value() : $redirectType));
-			endif;
-
-			exit;
-		endif;
-
-	endforeach;
+	Redirecty::checkRedirect();
 
 }
