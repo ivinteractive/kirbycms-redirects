@@ -17,7 +17,7 @@ if(c::get('redirecty'))
   ];
 
 return array(
-  'title' => 'Redirecty',
+  'title' => ['text' => 'Redirecty', 'compressed' => true],
   'options' => $options,
   'html' => function() {
 
